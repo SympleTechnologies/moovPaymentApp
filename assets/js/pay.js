@@ -5,7 +5,7 @@ $.ajaxSetup({
         'Accept': 'application/json'
     }
 });
-var api = (path = '') => window.location.protocol + "//" + window.location.host + "/api/v2" + path;
+var api = (path = '') => window.location.host=='localhost'? window.location.protocol + "//" + window.location.host + "/moov/api/v2"+path:"https://moov-php-backend.herokuapp.com/v2"+path;
 $('#submitBtn').click(function (e) {
     e.preventDefault()
     $('#realSubmitButton').click()
