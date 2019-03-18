@@ -6,7 +6,20 @@ $.ajaxSetup({
     }
 });
 
-var api = (path = '') => window.location.host=='localhost'? window.location.protocol + "//" + window.location.host + "/moov/api/v2"+path:"https://moov-php-backend.herokuapp.com/v2"+path;
+var api = function () {return window.location.host=='localhost'? window.location.protocol + "//" + window.location.host + "/moov/api/v2"+path:"https://moov-php-backend.herokuapp.com/v2"+path;}
+
+var loading=function(){
+    var ld = document.createElement("div");
+    ld.id = "loaderdiv";
+    ld.innerHTML =
+        '<div class="loader"> <img src="assets/img/loader.gif" width="90px" /> </div>';
+    document.body.appendChild(ld);
+}
+
+var finished=function(){
+    var $loader = document.getElementById("loaderdiv");
+    $loader && $loader.remove();
+}
 
 $('#submitBtn').click(function (e) {
     e.preventDefault()
@@ -21,14 +34,19 @@ $('#paymentForm').submit(function (e) {
     var amount = $paymentForm.find('input[name=amount]').val()
     var transactionReference = "" + Math.floor((Math.random() * 1000000000) + 1);
     var user;
+    loading();
     var handleExternalPaymentInitiationResponse = function (response) {
         if (!response.status) {
             return Promise.reject(response.message)
         }
+        setTimeout(function(){
+            finished()
+        },1000)
         user = response.data.user;
+        var amount_with_tax=response.data.amount_with_tax;
         return payWithPaystack({
             email: email,
-            amount: amount,
+            amount: amount_with_tax,
             reference: transactionReference,
             first_name: user.first_name,
             metadata: {
@@ -85,7 +103,7 @@ $('#paymentForm').submit(function (e) {
 
 function payWithPaystack(data) {
 
-    return new Promise((resolve, reject) => {
+    return new Promise(function (resolve, reject){
         // @ts-ignore
         var handler = PaystackPop.setup({
             key: 'pk_test_1544ffee69407a91be7cece08566ea4ca1343126',
