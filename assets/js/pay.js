@@ -6,7 +6,7 @@ $.ajaxSetup({
     }
 });
 
-var api = function () {return window.location.host=='localhost'? window.location.protocol + "//" + window.location.host + "/moov/api/v2"+path:"https://moov-php-backend.herokuapp.com/v2"+path;}
+var api = function (path) {return window.location.host=='localhost'? window.location.protocol + "//" + window.location.host + "/moov/api/v2"+path:"https://moov-php-backend.herokuapp.com/v2"+path;}
 
 var loading=function(){
     var ld = document.createElement("div");
